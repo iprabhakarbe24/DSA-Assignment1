@@ -3,11 +3,11 @@ using namespace std;
 
 #define SIZE 5
 
-class SimpleQueue {
+class CircularQueue {
     int arr[SIZE], front, rear;
 
 public:
-    SimpleQueue() {
+    CircularQueue() {
         front = -1;
         rear = -1;
     }
@@ -17,7 +17,7 @@ public:
     }
 
     bool isFull() {
-        return rear == SIZE - 1;
+        return (rear + 1) % SIZE == front;
     }
 
     void enqueue(int x) {
@@ -25,8 +25,9 @@ public:
             cout << "queue full\n";
             return;
         }
-        if (isEmpty()) front = 0;
-        arr[++rear] = x;
+        if (isEmpty()) front = rear = 0;
+        else rear = (rear + 1) % SIZE;
+        arr[rear] = x;
     }
 
     void dequeue() {
@@ -36,7 +37,7 @@ public:
         }
         cout << "removed: " << arr[front] << endl;
         if (front == rear) front = rear = -1;
-        else front++;
+        else front = (front + 1) % SIZE;
     }
 
     void peek() {
@@ -49,14 +50,18 @@ public:
             cout << "queue empty\n";
             return;
         }
-        for (int i = front; i <= rear; i++)
+        int i = front;
+        while (true) {
             cout << arr[i] << " ";
+            if (i == rear) break;
+            i = (i + 1) % SIZE;
+        }
         cout << endl;
     }
 };
 
 int main() {
-    SimpleQueue q;
+    CircularQueue q;
     int choice, value;
     while (true) {
         cout << "1-enqueue 2-dequeue 3-peek 4-display 5-exit\n";
